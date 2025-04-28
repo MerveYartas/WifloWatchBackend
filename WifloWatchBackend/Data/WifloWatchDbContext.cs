@@ -17,6 +17,8 @@ namespace WifloWatchBackend.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<SmartFriendRecommendation> SmartFriendsList { get; set; }
+        public DbSet<LoginModel> LoginModels { get; set; }
+        public DbSet<WatchHistory> WatchHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -120,6 +122,20 @@ namespace WifloWatchBackend.Data
             modelBuilder.Entity<Like>()
                 .Property(l => l.ContentType)
                 .HasConversion<string>();
+
+            modelBuilder.Entity<WatchHistory>()
+           .HasOne(w => w.User)
+           .WithMany(u => u.WatchHistories)
+           .HasForeignKey(w => w.UserId)
+           .OnDelete(DeleteBehavior.Cascade)
+           .IsRequired(false);
+
+            modelBuilder.Entity<WatchHistory>()
+          .HasOne(w => w.Movie)
+          .WithMany(m => m.WatchHistories)
+          .HasForeignKey(w => w.MovieId)
+          .OnDelete(DeleteBehavior.Cascade)
+          .IsRequired(false);
         }
     }
 }

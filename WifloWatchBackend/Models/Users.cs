@@ -31,9 +31,9 @@ public class User
     [MaxLength(255)]
     public string ProfilePicture { get; set; }
 
-    [Required]
     [MaxLength(20)]
-    public string Role { get; set; }
+    public string Role { get; set; } = "User"; 
+
 
     [Required]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -44,7 +44,9 @@ public class User
     public virtual ICollection<Message> SentMessages { get; set; } = new List<Message>();
     public virtual ICollection<Message> ReceivedMessages { get; set; } = new List<Message>();
     public virtual ICollection<Recommendation> Recommendations { get; set; } = new List<Recommendation>();
-    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public ICollection<Friendship> Friendships1 { get; set; }
-    public ICollection<Friendship> Friendships2 { get; set; }
+    public virtual ICollection<Comment>? Comments { get; set; } 
+    public ICollection<Friendship>? Friendships1 { get; set; }
+    public ICollection<Friendship>? Friendships2 { get; set; }
+    public ICollection<WatchHistory> WatchHistories { get; set; } = new List<WatchHistory>();
+
 }

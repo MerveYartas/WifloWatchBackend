@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WifloWatchBackend.Data;
 
@@ -11,9 +12,11 @@ using WifloWatchBackend.Data;
 namespace WifloWatchBackend.Migrations
 {
     [DbContext(typeof(WifloWatchDbContext))]
-    partial class WifloWatchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250310220729_modelAdd")]
+    partial class modelAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,40 +24,6 @@ namespace WifloWatchBackend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MessageText")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Messages");
-                });
 
             modelBuilder.Entity("User", b =>
                 {
@@ -199,6 +168,40 @@ namespace WifloWatchBackend.Migrations
                     b.ToTable("LoginModels");
                 });
 
+            modelBuilder.Entity("WifloWatchBackend.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MessageText")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("WifloWatchBackend.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
@@ -288,6 +291,7 @@ namespace WifloWatchBackend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Media")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -363,32 +367,6 @@ namespace WifloWatchBackend.Migrations
                     b.ToTable("SmartFriendsList");
                 });
 
-            modelBuilder.Entity("WifloWatchBackend.Models.WatchHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("WatchedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("WatchHistories");
-                });
-
             modelBuilder.Entity("WifloWatchBackend.Models.WatchList", b =>
                 {
                     b.Property<int>("UserId")
@@ -415,25 +393,6 @@ namespace WifloWatchBackend.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("WatchLists");
-                });
-
-            modelBuilder.Entity("Message", b =>
-                {
-                    b.HasOne("User", "Receiver")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("User", "Sender")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Receiver");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Comment", b =>
@@ -491,6 +450,25 @@ namespace WifloWatchBackend.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WifloWatchBackend.Models.Message", b =>
+                {
+                    b.HasOne("User", "Receiver")
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("User", "Sender")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Notification", b =>
@@ -553,23 +531,6 @@ namespace WifloWatchBackend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WifloWatchBackend.Models.WatchHistory", b =>
-                {
-                    b.HasOne("WifloWatchBackend.Models.Movie", "Movie")
-                        .WithMany("WatchHistories")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("User", "User")
-                        .WithMany("WatchHistories")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("WifloWatchBackend.Models.WatchList", b =>
                 {
                     b.HasOne("WifloWatchBackend.Models.Movie", "Movie")
@@ -603,8 +564,6 @@ namespace WifloWatchBackend.Migrations
 
                     b.Navigation("SentMessages");
 
-                    b.Navigation("WatchHistories");
-
                     b.Navigation("WatchLists");
                 });
 
@@ -613,8 +572,6 @@ namespace WifloWatchBackend.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("Recommendations");
-
-                    b.Navigation("WatchHistories");
 
                     b.Navigation("WatchLists");
                 });
