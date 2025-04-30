@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WifloWatchBackend.Data;
 
@@ -11,9 +12,11 @@ using WifloWatchBackend.Data;
 namespace WifloWatchBackend.Migrations
 {
     [DbContext(typeof(WifloWatchDbContext))]
-    partial class WifloWatchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250429100641_IsRead")]
+    partial class IsRead
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

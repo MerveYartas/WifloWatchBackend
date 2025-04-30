@@ -16,8 +16,8 @@ public class Message
     [StringLength(1000)]
     public string MessageText { get; set; }
 
-    [Required]
-    public bool IsRead { get; set; }
+   
+    public bool? IsRead { get; set; }
 
     [Required]
     public DateTime SentAt { get; set; }

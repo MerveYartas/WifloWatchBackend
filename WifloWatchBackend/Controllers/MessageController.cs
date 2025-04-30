@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WifloWatchBackend.Models; // Message sınıfının olduğu namespace
-using System.Threading.Tasks;
+using WifloWatchBackend.Models; // Message sınıfının bulunduğu namespace
+using System;
 using System.Linq;
-using WifloWatchBackend.Data;
+using System.Threading.Tasks;
+using WifloWatchBackend.Data; // DbContext'in bulunduğu namespace
 
 namespace WifloWatchBackend.Controllers
 {
@@ -11,7 +12,7 @@ namespace WifloWatchBackend.Controllers
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly WifloWatchDbContext _context; // DbContext'ini kendi ismine göre değiştir
+        private readonly WifloWatchDbContext _context;
 
         public MessageController(WifloWatchDbContext context)
         {
@@ -22,29 +23,37 @@ namespace WifloWatchBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage([FromBody] Message message)
         {
+            if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    // Hata mesajlarını konsola yazdırıyoruz
+                    Console.WriteLine($"Error: {error.ErrorMessage}");
+                }
+                return BadRequest(ModelState);
+            }
+
             if (message == null)
             {
                 return BadRequest("Mesaj içeriği geçersiz.");
             }
 
-            // Mesajın gönderilme zamanı ve okundu durumu ayarlanır
             message.SentAt = DateTime.UtcNow;
             message.IsRead = false;
 
             try
             {
-                // Mesaj veritabanına eklenir
                 _context.Messages.Add(message);
                 await _context.SaveChangesAsync();
 
-                // Başarılıysa mesajı geri döneriz
-                return Ok(message);
+                return CreatedAtAction(nameof(SendMessage), new { id = message.Id }, message);
             }
             catch (Exception ex)
             {
                 return BadRequest($"Mesaj kaydedilirken bir hata oluştu: {ex.Message}");
             }
         }
+
 
 
         // İki kullanıcı arasındaki mesajları getir
@@ -60,6 +69,11 @@ namespace WifloWatchBackend.Controllers
                         (m.SenderId == userId2 && m.ReceiverId == userId1))
                     .OrderBy(m => m.SentAt) // Gönderim sırasına göre sıralama
                     .ToListAsync();
+
+                if (messages == null || !messages.Any()) // Eğer mesaj yoksa
+                {
+                    return NotFound("Hiçbir mesaj bulunamadı.");
+                }
 
                 return Ok(messages); // Mesajları başarılı bir şekilde döndür
             }
