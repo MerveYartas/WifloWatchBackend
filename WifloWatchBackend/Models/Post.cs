@@ -13,7 +13,7 @@ namespace WifloWatchBackend.Models
 
         [Required] 
         [StringLength(1000)]  
-        public string Text { get; set; }
+        public string? Text { get; set; }
 
         [MaxLength(500)] 
         public string? Media { get; set; }
@@ -23,6 +23,9 @@ namespace WifloWatchBackend.Models
 
         // İlişkiler
         [ForeignKey("UserId")] 
-        public virtual User? User { get; set; } 
+        public virtual User? User { get; set; }
+       
+        public virtual ICollection<PostComment>? PostComments { get; set; }
+        public virtual ICollection<PostLike>? PostLikes { get; set; }
     }
 }

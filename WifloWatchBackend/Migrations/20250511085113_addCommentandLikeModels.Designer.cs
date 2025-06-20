@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WifloWatchBackend.Data;
 
@@ -11,9 +12,11 @@ using WifloWatchBackend.Data;
 namespace WifloWatchBackend.Migrations
 {
     [DbContext(typeof(WifloWatchDbContext))]
-    partial class WifloWatchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250511085113_addCommentandLikeModels")]
+    partial class addCommentandLikeModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,7 +56,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("PostComment", b =>
@@ -83,7 +86,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PostComments", (string)null);
+                    b.ToTable("PostComments");
                 });
 
             modelBuilder.Entity("PostLike", b =>
@@ -109,7 +112,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PostLikes", (string)null);
+                    b.ToTable("PostLikes");
                 });
 
             modelBuilder.Entity("User", b =>
@@ -159,7 +162,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Comment", b =>
@@ -189,7 +192,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Friendship", b =>
@@ -207,7 +210,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId2");
 
-                    b.ToTable("Friendship", (string)null);
+                    b.ToTable("Friendship");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Like", b =>
@@ -231,7 +234,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes", (string)null);
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.LoginModel", b =>
@@ -252,7 +255,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LoginModels", (string)null);
+                    b.ToTable("LoginModels");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Movie", b =>
@@ -291,7 +294,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies", (string)null);
+                    b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Notification", b =>
@@ -317,7 +320,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Post", b =>
@@ -347,7 +350,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Recommendation", b =>
@@ -373,7 +376,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Recommendations", (string)null);
+                    b.ToTable("Recommendations");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.SmartFriendRecommendation", b =>
@@ -404,7 +407,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SmartFriendsList", (string)null);
+                    b.ToTable("SmartFriendsList");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.WatchHistory", b =>
@@ -430,7 +433,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("WatchHistories", (string)null);
+                    b.ToTable("WatchHistories");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.WatchList", b =>
@@ -448,7 +451,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("WatchLists", (string)null);
+                    b.ToTable("WatchLists");
                 });
 
             modelBuilder.Entity("Message", b =>

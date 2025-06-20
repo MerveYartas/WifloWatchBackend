@@ -6,9 +6,16 @@ using WifloWatchBackend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
+
 
 // CORS Servisini ekleyin
 builder.Services.AddCors(options =>
@@ -30,24 +37,25 @@ builder.Services.AddDbContext<WifloWatchDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-    // JWT Authentication ayarları
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
+// JWT Authentication ayarları
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-
-            options.RequireHttpsMetadata = false;
-            options.SaveToken = true;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]))
-            };
-
-        });
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],  // Doğru Issuer'ı belirtin
+            ValidAudience = jwtSettings["Audience"],  // Doğru Audience'ı belirtin
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]))
+        };
+    });
 
 var app = builder.Build();
 

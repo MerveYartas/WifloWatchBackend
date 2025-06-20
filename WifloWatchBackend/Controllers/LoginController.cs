@@ -45,7 +45,8 @@ public class LoginController : ControllerBase
             token,
             userId = user.Id,  // Kullanıcı ID'yi ekliyoruz
             email = user.Email,
-            username = user.Username  // Eğer kullanıcı adın varsa bunu da ekleyebilirsin
+            username = user.Username,
+            role = user.Role
         });
     }
 
@@ -55,6 +56,7 @@ public class LoginController : ControllerBase
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.Role, user.Role),
             new Claim("username", user.Username)  // Kullanıcı adını da token içine koyduk
         };
 
@@ -62,8 +64,8 @@ public class LoginController : ControllerBase
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: "yourapp",
-            audience: "yourapp",
+            issuer: "WifloWatchAPI",
+            audience: "WifloWatchClient",
             claims: claims,
             expires: DateTime.UtcNow.AddDays(1), // UTC kullanmalısın
             signingCredentials: creds

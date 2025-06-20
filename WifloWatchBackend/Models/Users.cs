@@ -48,5 +48,6 @@ public class User
     public ICollection<Friendship>? Friendships1 { get; set; }
     public ICollection<Friendship>? Friendships2 { get; set; }
     public ICollection<WatchHistory> WatchHistories { get; set; } = new List<WatchHistory>();
+    public ICollection<Post>? Posts { get; set; }
 
 }

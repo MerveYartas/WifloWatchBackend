@@ -9,19 +9,15 @@ namespace WifloWatchBackend.Models
         [Key]
         public int Id { get; set; }
 
-        
+        [Required]
         public int ContentId { get; set; }  // Yorumun yapıldığı içerik (film/dizi)
-        
-        public string ContentType { get; set; }
 
-        
+        [Required]
         public int UserId { get; set; }  // Yorum yapan kullanıcı
 
-        
         [MaxLength(500)]  // Yorum uzunluğunu 500 karakterle sınırla
         public string CommentText { get; set; }  // Yorum metni
 
-        
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]  // Varsayılan olarak otomatik tarih ekle
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -31,5 +27,7 @@ namespace WifloWatchBackend.Models
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }  // Yorum yapan kullanıcı
+        public string ContentType { get; set; }  // örnek: "Movie" ya da "Post"
+
     }
 }

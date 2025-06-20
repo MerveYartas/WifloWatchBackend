@@ -13,14 +13,16 @@ namespace WifloWatchBackend.Models
         public int UserId { get; set; }
 
         [Required]
-        public int MovieId { get; set; } 
+        public int MovieId { get; set; }  // İzlenen film ID'si
+
         [Required]
         public DateTime WatchedAt { get; set; } = DateTime.UtcNow;
-      
+
+        // İlişkiler
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         [ForeignKey("MovieId")]
-        public Movie Movie { get; set; }
+        public virtual Movie Movie { get; set; }
     }
 }

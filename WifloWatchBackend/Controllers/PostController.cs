@@ -3,6 +3,8 @@ using WifloWatchBackend.Models;
 using WifloWatchBackend.Data; // DbContext'in bulunduğu namespace
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace WifloWatchBackend.Controllers
 {
@@ -18,13 +20,22 @@ namespace WifloWatchBackend.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Post>>> GetUserPosts(int userId)
         {
             try
             {
+            //    // Token'dan kullanıcı ID'sini alalım
+            //    var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //    if (userIdFromToken == null || userIdFromToken != userId.ToString())
+            //    {
+            //        return Unauthorized(new { message = "Geçersiz kullanıcı kimliği." });
+            //    }
+
+                // Kullanıcıya ait paylaşımları sorgulayalım
                 var userPosts = await _context.Posts
                     .Where(p => p.UserId == userId)
-                    .Include(p => p.User)
                     .ToListAsync();
 
                 if (!userPosts.Any())
@@ -41,31 +52,28 @@ namespace WifloWatchBackend.Controllers
         }
 
 
+
         // Yeni bir paylaşım eklemek için POST isteği
-        [HttpPost("post")]  // This handles POST requests
-        public async Task<IActionResult> CreatePost([FromBody] Post post)
+        [HttpPost("post")]
+        [Authorize]
+        public async Task<IActionResult> CreatePost(Post post)
         {
-            if (post == null)
-            {
-                return BadRequest("Geçersiz Veri.");
-            }
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            // Kullanıcının ID’sini session veya token'dan alıyorsan bu şekilde çekebilirsin
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId");
-            if (userIdClaim == null)
+            if (userIdFromToken == null || post.UserId != int.Parse(userIdFromToken))
             {
-                return Unauthorized("Kullanıcı kimliği bulunamadı.");
+                return Unauthorized(new { message = "Geçersiz kullanıcı kimliği." });
             }
-
-            int userId = int.Parse(userIdClaim.Value);
-            post.UserId = userId; // Kullanıcı ID'sini manuel olarak ekleme ihtiyacını kaldırıyoruz
 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 
-         
-            return Ok(post); 
+            return Ok(post);
         }
+
+
+
+
 
     }
 }

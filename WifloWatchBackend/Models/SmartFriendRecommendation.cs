@@ -5,26 +5,26 @@ namespace WifloWatchBackend.Models
 {
     public class SmartFriendRecommendation
     {
-        [Key]  // Bu özellik, SmartFriendRecommendation sınıfının birincil anahtarını belirtir
+        [Key]  
         public int Id { get; set; }
 
-        [Required]  // Öneriyi alan kullanıcı zorunlu
-        public int UserId { get; set; }  // Öneriyi alan kullanıcı
+        [Required] 
+        public int UserId { get; set; }  
 
-        [Required]  // Önerilen kullanıcı zorunlu
+        [Required]  
         public int RecommendedUserId { get; set; }  // Önerilen kullanıcı
 
-        [MaxLength(1000)]   // Öneri nedeni için maksimum 1000 karakter
-        public string Reason { get; set; }  // Öneri nedeni (film/dizi tercihleri vb.)
+        [MaxLength(1000)]   
+        public string Reason { get; set; }  // Öneri nedeni 
 
-        [Required]  // Öneri tarihi zorunlu
-        public DateTime CreatedAt { get; set; }  // Öneri tarihi
+        [Required]  
+        public DateTime CreatedAt { get; set; } 
 
         // İlişkiler
-        [ForeignKey("UserId")]  // UserId'yi User ile ilişkilendirir
+        [ForeignKey("UserId")] 
         public virtual User User { get; set; }  // Öneriyi alan kullanıcı
 
-        [ForeignKey("RecommendedUserId")]  // RecommendedUserId'yi User ile ilişkilendirir
+        [ForeignKey("RecommendedUserId")] 
         public virtual User RecommendedUser { get; set; }  // Önerilen kullanıcı
     }
 }

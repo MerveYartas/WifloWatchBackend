@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WifloWatchBackend.Models; // Message sınıfının bulunduğu namespace
+using WifloWatchBackend.Models;  // Ensure MessageDto is in this namespace
+using WifloWatchBackend.Data;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using WifloWatchBackend.Data; // DbContext'in bulunduğu namespace
+using Microsoft.EntityFrameworkCore;
 
 namespace WifloWatchBackend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/messages")]
     public class MessageController : ControllerBase
     {
         private readonly WifloWatchDbContext _context;
@@ -18,45 +17,58 @@ namespace WifloWatchBackend.Controllers
         {
             _context = context;
         }
-
-        // Mesaj gönderme
-        [HttpPost]
-        public async Task<IActionResult> SendMessage([FromBody] Message message)
+        [HttpGet("AllMessage")]
+        public async Task<IActionResult> GetAllMessages()
         {
-            if (!ModelState.IsValid)
-            {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    // Hata mesajlarını konsola yazdırıyoruz
-                    Console.WriteLine($"Error: {error.ErrorMessage}");
-                }
-                return BadRequest(ModelState);
-            }
-
-            if (message == null)
-            {
-                return BadRequest("Mesaj içeriği geçersiz.");
-            }
-
-            message.SentAt = DateTime.UtcNow;
-            message.IsRead = false;
-
             try
             {
-                _context.Messages.Add(message);
-                await _context.SaveChangesAsync();
+                var messages = await _context.Messages
+                    .Include(m => m.Sender)
+                    .Include(m => m.Receiver)
+                    .Select(m => new
+                    {
+                        m.Id,
+                        Sender = new { m.Sender.Id, m.Sender.Username },
+                        Receiver = new { m.Receiver.Id, m.Receiver.Username },
+                        MessageText = m.MessageText,
+                        SentAt = m.SentAt
+                    })
+                    .ToListAsync();
 
-                return CreatedAtAction(nameof(SendMessage), new { id = message.Id }, message);
+                return Ok(messages);
             }
             catch (Exception ex)
             {
-                return BadRequest($"Mesaj kaydedilirken bir hata oluştu: {ex.Message}");
+                return StatusCode(500, $"Sunucu hatası: {ex.Message}");
+            }
+        }
+        [HttpPost("gonder")]
+        public async Task<IActionResult> SendMessage([FromBody] MessageDTO messageDto)
+        {
+            try
+            {
+                if (messageDto == null)
+                    return BadRequest("Mesaj verisi geçersiz.");
+
+                var message = new Message
+                {
+                    SenderId = messageDto.SenderId,
+                    ReceiverId = messageDto.ReceiverId,
+                    MessageText = messageDto.MessageText,
+                    SentAt = DateTime.UtcNow
+                };
+
+                _context.Messages.Add(message);
+                await _context.SaveChangesAsync();
+
+                return Ok(message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Sunucu hatası oluştu.");
             }
         }
 
-
-
-        // İki kullanıcı arasındaki mesajları getir
         [HttpGet("between/{userId1}/{userId2}")]
         public async Task<IActionResult> GetMessagesBetween(int userId1, int userId2)
         {
@@ -75,12 +87,51 @@ namespace WifloWatchBackend.Controllers
                     return NotFound("Hiçbir mesaj bulunamadı.");
                 }
 
-                return Ok(messages); // Mesajları başarılı bir şekilde döndür
+                // Mesajları başarılı bir şekilde döndür
+                return Ok(messages);
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message }); // Hata durumunda mesajı döndür
             }
         }
+
+        // Okunmamış mesajları almak için API
+        [HttpGet("unread/{userId}")]
+        public async Task<IActionResult> GetUnreadMessages(int userId)
+        {
+            var messages = await _context.Messages
+                .Where(m => m.ReceiverId == userId && m.IsRead != true)
+                .OrderByDescending(m => m.SentAt)
+                .Select(m => new
+                {
+                    m.Id,
+                    m.SenderId,
+                    SenderName = m.Sender.Username, // Kullanıcı adı
+                    m.MessageText,
+                    m.SentAt
+                })
+                .ToListAsync();
+
+            if (messages.Count == 0)
+            {
+                return NotFound("No unread messages found.");
+            }
+
+            return Ok(messages);
+        }
+        [HttpPut("markasread/{id}")]
+        public async Task<IActionResult> MarkAsRead(int id)
+        {
+            var message = await _context.Messages.FindAsync(id);
+            if (message == null)
+                return NotFound();
+
+            message.IsRead = true;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
     }
 }

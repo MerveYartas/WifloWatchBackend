@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WifloWatchBackend.Data;
 
@@ -11,9 +12,11 @@ using WifloWatchBackend.Data;
 namespace WifloWatchBackend.Migrations
 {
     [DbContext(typeof(WifloWatchDbContext))]
-    partial class WifloWatchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250510172454_MOvieUpdate")]
+    partial class MOvieUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,63 +56,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages", (string)null);
-                });
-
-            modelBuilder.Entity("PostComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PostComments", (string)null);
-                });
-
-            modelBuilder.Entity("PostLike", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("LikedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PostLikes", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("User", b =>
@@ -159,7 +106,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Comment", b =>
@@ -189,7 +136,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Friendship", b =>
@@ -207,7 +154,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId2");
 
-                    b.ToTable("Friendship", (string)null);
+                    b.ToTable("Friendship");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Like", b =>
@@ -231,7 +178,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes", (string)null);
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.LoginModel", b =>
@@ -252,7 +199,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LoginModels", (string)null);
+                    b.ToTable("LoginModels");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Movie", b =>
@@ -291,7 +238,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies", (string)null);
+                    b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Notification", b =>
@@ -317,7 +264,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Post", b =>
@@ -335,6 +282,9 @@ namespace WifloWatchBackend.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -345,9 +295,11 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PostId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Recommendation", b =>
@@ -373,7 +325,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Recommendations", (string)null);
+                    b.ToTable("Recommendations");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.SmartFriendRecommendation", b =>
@@ -404,7 +356,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SmartFriendsList", (string)null);
+                    b.ToTable("SmartFriendsList");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.WatchHistory", b =>
@@ -430,7 +382,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("WatchHistories", (string)null);
+                    b.ToTable("WatchHistories");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.WatchList", b =>
@@ -448,7 +400,7 @@ namespace WifloWatchBackend.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("WatchLists", (string)null);
+                    b.ToTable("WatchLists");
                 });
 
             modelBuilder.Entity("Message", b =>
@@ -468,44 +420,6 @@ namespace WifloWatchBackend.Migrations
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("PostComment", b =>
-                {
-                    b.HasOne("WifloWatchBackend.Models.Post", "Post")
-                        .WithMany("PostComments")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PostLike", b =>
-                {
-                    b.HasOne("WifloWatchBackend.Models.Post", "Post")
-                        .WithMany("PostLikes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WifloWatchBackend.Models.Comment", b =>
@@ -578,6 +492,10 @@ namespace WifloWatchBackend.Migrations
 
             modelBuilder.Entity("WifloWatchBackend.Models.Post", b =>
                 {
+                    b.HasOne("WifloWatchBackend.Models.Post", null)
+                        .WithMany("Posts")
+                        .HasForeignKey("PostId");
+
                     b.HasOne("User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
@@ -697,9 +615,7 @@ namespace WifloWatchBackend.Migrations
 
             modelBuilder.Entity("WifloWatchBackend.Models.Post", b =>
                 {
-                    b.Navigation("PostComments");
-
-                    b.Navigation("PostLikes");
+                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }
